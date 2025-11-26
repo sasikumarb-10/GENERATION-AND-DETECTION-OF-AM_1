@@ -83,13 +83,69 @@ Note: Keep all the switch faults in off position
 <img width="600" height="800" alt="image" src="https://github.com/user-attachments/assets/7bc77926-9c2a-42c6-994b-6c67433b11d2" />
 
 ## PROGRAM:
- 
+
+    am = 10.5;
+	fm = 1033;
+	fs = 1033000;
+	pi = %pi;
+	t = 0:1/fs:2/fm;
+	m = am * cos(2 * pi * fm * t);
+	ac = 21;
+	fc = 10330;
+	c = cos(2 * pi * fc * t);
+	modulated = (ac + m) .* c;
+	
+	demod_raw = modulated .* c;
+	N = length(demod_raw);
+	M = fft(demod_raw);
+	f = (0:N-1)*(fs/N);
+	
+	cutoff = 2 * fm;
+	H = (f < cutoff);
+	M_filtered = M .* H;
+	demodulated = real(ifft(M_filtered));
+	
+	avg = sum(demodulated) / length(demodulated);
+	demodulated = demodulated - avg;
+	demodulated = demodulated / max(abs(demodulated));
+	demodulated = demodulated * max(abs(m));
+	
+	subplot(4,1,1);
+	plot(t, m);
+	title('Message Signal');
+	xlabel('Time (s)');
+	ylabel('Amplitude');
+	
+	subplot(4,1,2);
+	plot(t, c);
+	title('Carrier Signal');
+	xlabel('Time (s)');
+	ylabel('Amplitude');
+	
+	subplot(4,1,3);
+	plot(t, modulated);
+	title('AM Modulated Signal');
+	xlabel('Time (s)');
+	ylabel('Amplitude');
+	
+	subplot(4,1,4);
+	plot(t, demodulated);
+	title('Demodulated Signal');
+	xlabel('Time (s)');
+	ylabel('Amplitude');
+
 ## TABULATION:
+
+![WhatsApp Image 2025-11-19 at 15 09 19_a643a5a6](https://github.com/user-attachments/assets/5b0ed4b4-b155-497c-a785-b7f57363f2ea)
 
 ## CALCULATION:
 
-
+![WhatsApp Image 2025-11-19 at 17 24 36_823eebba](https://github.com/user-attachments/assets/69a80509-bb9e-43a7-a7a0-5813e38f399e)
 
 ## OUTPUT:
 
+![WhatsApp Image 2025-11-19 at 17 25 51_6140c61f](https://github.com/user-attachments/assets/a49b015e-b2b0-477b-87cf-df178831c58d)
+
 ## RESULT:
+
+Thus , the amplitude modulation and demodulation is experimentally done and the output is verified.
